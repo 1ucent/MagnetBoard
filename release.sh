@@ -108,6 +108,16 @@ else
 fi
 
 [[ -f "$APP_PATH_BUILD" ]] || die "no ipa at $APP_PATH_BUILD (run ./build_ipa.sh first)"
+
+# Make sure we are about to publish a real app bundle, not a stray file.
+if command -v unzip >/dev/null 2>&1; then
+  unzip -l "$APP_PATH_BUILD" | grep -q 'Payload/[^/]*\.app/Info\.plist' \
+    || die "$APP_PATH_BUILD is not an .ipa (no Payload/*.app/Info.plist inside)"
+  if ! unzip -l "$APP_PATH_BUILD" | grep -q 'Payload/[^/]*\.app/Magnet\.mfxl'; then
+    warn "this .ipa has no Magnet.mfxl — it will install but run in demo mode"
+  fi
+fi
+
 if command -v shasum >/dev/null 2>&1; then
   SHA="$(shasum -a 256 "$APP_PATH_BUILD" | awk '{print $1}')"
 else
