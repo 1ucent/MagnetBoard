@@ -160,8 +160,11 @@ click, thump and whoosh is synthesised, so there are no samples or music
 licensing to worry about.
 
 Beats: title → board arrives → the magnet sweeps the tiles (a click as it passes
-each one) → an air tap (click-clack, ripple, counter goes to 1) → yanked away →
-outro.
+each one) → an air tap (click-clack, ripple, counter goes to 1) → the magnet is
+dragged to the right edge, the board gathers to it and the particles pile up →
+yanked away → outro. The renderer draws particles and the edge gather with the
+same rules as the app (`gather_state` / `focus_point` mirror `EdgeGather.swift`
+and `MagnetFrame.attraction`).
 
 ```sh
 python3 -m venv .venv && .venv/bin/pip install pillow numpy

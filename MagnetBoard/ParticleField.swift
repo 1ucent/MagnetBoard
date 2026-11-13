@@ -72,15 +72,20 @@ struct ParticleField: View {
 
                 if let target, presence > 0.01 {
                     let u = ease(presence, delay: seed.delay)
-                    let spread = (piled ? 12.0 : 30.0) + 20.0 * (1.0 - seed.delay)
+                    let spread = (piled ? 24.0 : 28.0) + 22.0 * (1.0 - seed.delay)
                     let angle = seed.phase + now * seed.speed * motion
                     let needle = CGPoint(
                         x: target.x + CGFloat(cos(angle) * spread),
                         y: target.y + CGFloat(sin(angle) * spread * 0.82)
                     )
                     point = lerp(home, needle, CGFloat(u))
-                    if u > 0.18 {
-                        tail = lerp(home, needle, CGFloat(max(0, u - 0.16)))
+                    if u > 0.30 {
+                        let past = angle - 0.22 * seed.speed
+                        let previous = CGPoint(
+                            x: target.x + CGFloat(cos(past) * spread),
+                            y: target.y + CGFloat(sin(past) * spread * 0.82)
+                        )
+                        tail = lerp(home, previous, CGFloat(u))
                     }
                     energy = u
                 }
@@ -101,8 +106,8 @@ struct ParticleField: View {
                     context.stroke(
                         path,
                         with: .color(Color(red: 0.35, green: 0.85, blue: 0.98,
-                                           opacity: 0.32 * energy)),
-                        style: StrokeStyle(lineWidth: radius * 1.1, lineCap: .round)
+                                           opacity: 0.22 * energy)),
+                        style: StrokeStyle(lineWidth: radius * 0.9, lineCap: .round)
                     )
                 }
 

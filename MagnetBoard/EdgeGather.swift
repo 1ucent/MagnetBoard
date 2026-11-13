@@ -158,7 +158,7 @@ struct EdgeGatherEffect: ViewModifier {
         let shift = gather?.shift ?? .zero
 
         content
-            .scaleEffect(1 - 0.46 * strength, anchor: anchor)
+            .scaleEffect(1 - 0.38 * strength, anchor: anchor)
             .offset(x: shift.dx * strength, y: shift.dy * strength)
             .opacity(1 - 0.06 * strength)
     }

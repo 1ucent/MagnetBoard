@@ -42,19 +42,6 @@ struct ContentView: View {
                 ZStack {
                     background(frame: frame)
 
-                    if particlesEnabled {
-                        GeometryReader { canvas in
-                            ParticleField(
-                                frame: frame,
-                                origin: canvas.frame(in: .global).origin,
-                                now: now,
-                                reduceMotion: reduceMotion
-                            )
-                        }
-                        .ignoresSafeArea()
-                        .allowsHitTesting(false)
-                    }
-
                     VStack(spacing: 12) {
                         header(frame: frame, gather: gather)
                             .padding(.horizontal, 18)
@@ -98,6 +85,19 @@ struct ContentView: View {
                     }
                     .padding(.top, 4)
                     .modifier(EdgeGatherEffect(gather: gather, board: board, enabled: gatherEnabled))
+
+                    if particlesEnabled {
+                        GeometryReader { canvas in
+                            ParticleField(
+                                frame: frame,
+                                origin: canvas.frame(in: .global).origin,
+                                now: now,
+                                reduceMotion: reduceMotion
+                            )
+                        }
+                        .ignoresSafeArea()
+                        .allowsHitTesting(false)
+                    }
 
                     FieldOverlay(
                         frame: frame,

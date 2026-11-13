@@ -117,9 +117,10 @@ PUCK_KEYS = [
     (8.00, 610.0, 980.0),
     (8.13, 610.0, 980.0),
     (8.70, 770.0, 700.0),
-    (9.30, 420.0, 870.0),
-    (9.85, 620.0, 1180.0),
-    (10.20, 620.0, 1180.0),
+    (9.30, 430.0, 870.0),
+    (9.70, 940.0, 800.0),
+    (9.95, 1120.0, 730.0),
+    (10.20, 1120.0, 730.0),
     (10.70, 900.0, 190.0),
     (11.00, 1010.0, 40.0),
 ]
@@ -180,6 +181,54 @@ def pull(t):
 
 def distance_cm(t):
     return 2.0 + 9.5 * (1 - closeness(t))
+
+
+BOARD_TOP, BOARD_BOTTOM = 150.0, 1840.0
+
+
+def gather_state(t):
+    """Same rule as EdgeGather.swift: nearest edge, strength from near/outside."""
+    x, y = puck_pos(t)
+    pres = presence(t)
+    if pres <= 0.02:
+        return 0.0, None, None
+
+    left, right = PAD, W - PAD
+    d_left = x - left
+    d_right = right - x
+    d_top = y - BOARD_TOP
+    d_bottom = BOARD_BOTTOM - y
+
+    outside = max(0.0, -min(d_left, d_right, d_top, d_bottom))
+    near = max(0.0, 1 - min(d_left, d_right, d_top, d_bottom) / 150)
+    strength = min(1.0, max(near * near * 0.72, outside / 70)) * pres
+    if strength < 0.03:
+        return 0.0, None, None
+
+    edge = min((("left", d_left), ("right", d_right), ("top", d_top), ("bottom", d_bottom)),
+               key=lambda item: item[1])[0]
+
+    ax = min(max(x, left + 44), right - 44)
+    ay = min(max(y, BOARD_TOP + 44), BOARD_BOTTOM - 44)
+    if edge == "left":
+        ax = left
+    elif edge == "right":
+        ax = right
+    elif edge == "top":
+        ay = BOARD_TOP
+    else:
+        ay = BOARD_BOTTOM
+
+    return strength, (ax, ay), edge
+
+
+def focus_point(t):
+    """Where particles pile: the magnet clamped inside the screen."""
+    x, y = puck_pos(t)
+    px = min(max(x, 14), W - 14)
+    py = min(max(y, 14), H - 14)
+    piled = abs(px - x) > 0.5 or abs(py - y) > 0.5
+    return px, py, piled
 
 
 def height_cm(t):
@@ -395,6 +444,64 @@ def background(pull_amount):
     return img
 
 
+# -------------------------------------------------------------- particles ---
+
+_PARTICLES = None
+
+
+def particle_seeds():
+    global _PARTICLES
+    if _PARTICLES is None:
+        rng = np.random.default_rng(7)
+        _PARTICLES = [
+            (
+                float(rng.random()), float(rng.random()),
+                2.4 + float(rng.random()) * 3.4,
+                float(rng.random()) * 0.52,
+                float(rng.random()) * math.tau,
+                0.22 + float(rng.random()) * 0.75,
+            )
+            for _ in range(88)
+        ]
+    return _PARTICLES
+
+
+def draw_particles(d, t, presence_value):
+    fx, fy, piled = focus_point(t)
+    for (sx, sy, size, delay, phase, speed) in particle_seeds():
+        hx = sx * W + math.sin(t * 0.35 + phase) * 14
+        hy = sy * H + math.cos(t * 0.29 + phase * 1.7) * 11
+
+        if presence_value <= 0.01:
+            d.ellipse([hx - size * 0.55, hy - size * 0.55, hx + size * 0.55, hy + size * 0.55],
+                      fill=rgba(ACCENT, 0.22))
+            continue
+
+        span = max(0.05, 1 - delay)
+        u = min(1.0, max(0.0, (presence_value - delay) / span))
+        u = u * u * (3 - 2 * u)
+
+        spread = (46.0 if piled else 30.0) + 26.0 * (1 - delay)
+        angle = phase + t * speed
+        nx = fx + math.cos(angle) * spread
+        ny = fy + math.sin(angle) * spread * 0.82
+
+        px = hx + (nx - hx) * u
+        py = hy + (ny - hy) * u
+        radius = size * (0.85 + 0.95 * u)
+
+        # Trail from where the particle was a moment ago (along the orbit, not
+        # radially), so the stream reads as dust rather than a star burst.
+        if u > 0.30:
+            past = angle - 0.22 * speed
+            qx = hx + (fx + math.cos(past) * spread - hx) * u
+            qy = hy + (fy + math.sin(past) * spread * 0.82 - hy) * u
+            d.line([qx, qy, px, py], fill=rgba(ACCENT, 0.22 * u), width=2)
+
+        d.ellipse([px - radius, py - radius, px + radius, py + radius],
+                  fill=rgba(mix(ACCENT, (255, 255, 255), 0.55 * u), 0.14 + 0.66 * u))
+
+
 # ------------------------------------------------------------------ scene ---
 
 def draw_pill(d, x, y, text, colour, font):
@@ -496,7 +603,8 @@ def blit_glow(img, cx, cy, rx, ry, colour, strength):
 def draw_beam_and_puck(img, d, pos, presence_value, halo, t):
     if presence_value <= 0.01:
         return
-    x, y = pos
+    x = min(max(pos[0], 14.0), W - 14.0)
+    y = min(max(pos[1], 14.0), H - 14.0)
 
     halo_size = int(460 * (0.75 + 0.35 * presence_value))
     h = halo.resize((halo_size, halo_size), Image.BILINEAR)
@@ -708,12 +816,37 @@ def render_frame(t, ctx):
     img.paste(ctx["dots"], (0, 0), ctx["dots"])
 
     d = ImageDraw.Draw(img, "RGBA")
+
     if t > 1.72:
-        draw_header(d, pres)
-        draw_meter(d, pres)
-        draw_tiles(img, d, pos, pres, ctx["tiles"], t)
+        board = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        bd = ImageDraw.Draw(board, "RGBA")
+        draw_header(bd, pres)
+        draw_meter(bd, pres)
+        draw_tiles(board, bd, pos, pres, ctx["tiles"], t)
+        bd = ImageDraw.Draw(board, "RGBA")
+        draw_hud(bd, t, pres, pull_value)
+
+        strength, anchor, edge = gather_state(t)
+        if strength > 0.01 and anchor:
+            scale = 1 - 0.38 * strength
+            small = board.resize((max(1, int(W * scale)), max(1, int(H * scale))),
+                                 Image.BILINEAR)
+            ox = anchor[0] - anchor[0] * scale
+            oy = anchor[1] - anchor[1] * scale
+            if edge == "left":
+                ox -= 16 * strength
+            elif edge == "right":
+                ox += 16 * strength
+            elif edge == "top":
+                oy -= 14 * strength
+            else:
+                oy += 14 * strength
+            img.paste(small, (int(ox), int(oy)), small)
+        else:
+            img.paste(board, (0, 0), board)
+
         d = ImageDraw.Draw(img, "RGBA")
-        draw_hud(d, t, pres, pull_value)
+        draw_particles(d, t, pres)
 
     draw_beam_and_puck(img, d, pos, pres, ctx["halo"], t)
     draw_ripples(d, pos, t - TAP_T)
@@ -883,7 +1016,7 @@ def main():
     if args.stills:
         out = os.path.join(PROMO_DIR, "stills")
         os.makedirs(out, exist_ok=True)
-        for t in (0.9, 1.6, 3.2, 5.0, 8.30, 9.4, 10.40, 12.4):
+        for t in (0.9, 3.2, 5.0, 8.30, 9.60, 10.05, 12.4):
             render_frame(t, ctx).save(os.path.join(out, f"still-{t:05.2f}.png"))
         print("stills:", out)
         return
