@@ -1,5 +1,7 @@
 # Magnet Board
 
+[![Magnet Board promo](promo/poster.png)](promo/magnetboard-promo.webm)
+
 A small SwiftUI iPhone app whose whole interface **leans toward a real magnet**.
 
 Hold a fridge magnet (a small neodymium ring works best) about 2 cm above the
@@ -31,6 +33,9 @@ Magnet app  ──►  MagnetKit (Magnet.mfxl, Accelerate)  ──►  MagnetFra
 | `SettingsSheet.swift` | Demo mode, magnet north face, recalibrate, model setup notes |
 | `Theme.swift` | Palette, metrics, shared card surface |
 | `tools/make_icon.py` | Regenerates `AppIcon-1024.png` (pure Python, no dependencies) |
+| `tools/make_promo.py` | Renders the promo video: Pillow frames piped to ffmpeg, clicky audio synthesised with numpy |
+| `promo/magnetboard-promo.webm` | The 15 s, 1080×1920 promo (VP9 + Opus) |
+| `release.sh` | Build the `.ipa`, tag, create a GitHub Release, upload the ipa + sha256 |
 
 ## Requirements
 
@@ -119,6 +124,43 @@ func influence(at center: CGPoint, reach: CGFloat) -> CGFloat {
   `config.magnetFace` if the puck mirrors your hand.
 - **Recalibrate** after putting the phone on a steel table, a laptop or a MagSafe
   puck — those shift the phone's own field.
+
+## Promo video
+
+`promo/magnetboard-promo.webm` — 15 s, 1080×1920 (9:16), VP9 video + Opus audio,
+about 1.3 MB. Nothing was screen-recorded: the board is re-drawn frame by frame
+with the same palette and the same pull maths as `MagneticTile.swift`, and every
+click, thump and whoosh is synthesised, so there are no samples or music
+licensing to worry about.
+
+Beats: title → board arrives → the magnet sweeps the tiles (a click as it passes
+each one) → an air tap (click-clack, ripple, counter goes to 1) → yanked away →
+outro.
+
+```sh
+python3 -m venv .venv && .venv/bin/pip install pillow numpy
+.venv/bin/python tools/make_promo.py            # full render (~1 min)
+.venv/bin/python tools/make_promo.py --stills   # review PNGs instead
+```
+
+## Releasing
+
+```sh
+./release.sh 1.0.0               # build on macOS, tag v1.0.0, create the release, upload
+./release.sh 1.0.0 --skip-build  # upload an existing build/MagnetBoard.ipa
+./release.sh 1.0.0 --draft       # keep it hidden until you publish it
+./release.sh 1.0.0 --dry-run     # show what it would do
+```
+
+It uploads `MagnetBoard.ipa` plus `MagnetBoard.ipa.sha256`, writes release notes
+with the checksum, and re-running for the same tag replaces the assets, so a
+rebuild is safe. Auth, in order: `$GH_TOKEN`, `gh auth token`, or the credential
+git already stores for github.com.
+
+`.github/workflows/release.yml` does the same on a `v*` tag with a macOS runner.
+The model can't live in a public repo, so add it as a base64 secret
+`MAGNET_MODEL_B64` (`base64 -i Magnet.mfxl`) — without it the CI build falls back
+to demo mode.
 
 ## Licensing
 

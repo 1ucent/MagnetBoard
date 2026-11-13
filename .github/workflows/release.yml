@@ -56,7 +56,19 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           name: MagnetBoard ${{ github.event.inputs.tag || github.ref_name }}
-          generate_release_notes: true
+          body: |
+            Unsigned `.ipa` — sideload it with AltStore, Sideloadly or TrollStore.
+
+            Requires iOS 17+ on a real iPhone, plus a magnet (a small neodymium
+            ring works best).
+
+            > `Magnet.mfxl` cannot live in this public repository (Libraries.dev
+            > Model License), so a build made without the `MAGNET_MODEL_B64`
+            > secret runs in **demo mode**: drag the orange puck instead of using
+            > a magnet. Add the model to the app target and rebuild for the real
+            > thing.
+
+            Built from `${{ github.sha }}` on a macOS runner.
           files: |
             build/MagnetBoard.ipa
             build/MagnetBoard.ipa.sha256

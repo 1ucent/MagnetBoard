@@ -70,7 +70,7 @@ COMMIT="$(git rev-parse --short HEAD)"
 if [[ -z "$REPO" ]]; then
   ORIGIN="$(git remote get-url origin 2>/dev/null || true)"
   [[ -n "$ORIGIN" ]] || die "no origin remote; pass --repo owner/name"
-  REPO="$(printf '%s' "$ORIGIN" | sed -E 's#^.*github\.com[:/]([^/]+/[^/]+?)(\.git)?$#\1#')"
+  REPO="$(printf '%s' "$ORIGIN" | sed -E 's#^.*github\.com[:/]##; s#\.git$##; s#/$##')"
 fi
 [[ "$REPO" == */* ]] || die "could not work out the repo slug (got '$REPO')"
 
@@ -78,6 +78,15 @@ say "Releasing $TAG from $BRANCH@$COMMIT to $REPO"
 
 if [[ -n "$(git status --porcelain)" ]]; then
   warn "working tree is dirty — the release will not match the tag"
+fi
+
+if [[ $DRY_RUN -eq 1 ]]; then
+  say "Dry run — would:"
+  echo "    build:  $([[ $SKIP_BUILD -eq 1 ]] && echo 'skipped (--skip-build)' || echo './build_ipa.sh')"
+  echo "    tag:    $TAG and push it to origin"
+  echo "    release: create/refresh $TAG on $REPO ${DRAFT:+(draft)}"
+  echo "    upload: build/MagnetBoard.ipa and build/MagnetBoard.ipa.sha256"
+  exit 0
 fi
 
 # --------------------------------------------------------------------- build --
@@ -162,14 +171,6 @@ api() { # api METHOD PATH [JSON]
 jget() { # jget KEY — print a key from a JSON object on stdin (empty if missing)
   python3 -c 'import json,sys; print(json.load(sys.stdin).get(sys.argv[1], ""))' "$1" 2>/dev/null || true
 }
-
-if [[ $DRY_RUN -eq 1 ]]; then
-  say "Dry run — would:"
-  echo "    git tag $TAG && git push origin $TAG"
-  echo "    create/refresh release $TAG on $REPO ${DRAFT:+(draft)}"
-  echo "    upload $APP_PATH_BUILD and build/MagnetBoard.ipa.sha256"
-  exit 0
-fi
 
 # ----------------------------------------------------------------------- tag --
 

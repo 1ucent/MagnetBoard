@@ -3,3 +3,7 @@ build/
 xcuserdata/
 *.ipa
 *.xcarchive
+.venv/
+promo/stills/
+__pycache__/
+*.pyc
