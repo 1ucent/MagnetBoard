@@ -1,0 +1,62 @@
+name: release
+
+# Builds an unsigned .ipa on a macOS runner and attaches it to a GitHub Release.
+#
+# The magnet model (Magnet.mfxl) is NOT in this repository: its licence forbids
+# redistributing it publicly. To ship a build that can actually see a magnet,
+# add the file as a base64 repository secret named MAGNET_MODEL_B64:
+#
+#     base64 -i Magnet.mfxl | pbcopy     # macOS, paste into the secret
+#
+# Without the secret the app still builds and runs in demo mode.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build, e.g. v1.0.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  ipa:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Add magnet model from secret (optional)
+        env:
+          MAGNET_MODEL_B64: ${{ secrets.MAGNET_MODEL_B64 }}
+        run: |
+          if [ -n "${MAGNET_MODEL_B64:-}" ]; then
+            printf '%s' "$MAGNET_MODEL_B64" | base64 --decode > MagnetBoard/Magnet.mfxl
+            echo "model added ($(du -h MagnetBoard/Magnet.mfxl | cut -f1))"
+          else
+            echo "::warning::MAGNET_MODEL_B64 is not set — the ipa will fall back to demo mode"
+          fi
+
+      - name: Build unsigned ipa
+        run: ./build_ipa.sh
+
+      - name: Package ipa
+        run: |
+          set -euo pipefail
+          ls -lh build/MagnetBoard.ipa
+          shasum -a 256 build/MagnetBoard.ipa | awk '{print $1"  MagnetBoard.ipa"}' > build/MagnetBoard.ipa.sha256
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: MagnetBoard ${{ github.event.inputs.tag || github.ref_name }}
+          generate_release_notes: true
+          files: |
+            build/MagnetBoard.ipa
+            build/MagnetBoard.ipa.sha256

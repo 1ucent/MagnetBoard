@@ -1,0 +1,317 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A20000000000000000000001 /* MagnetBoardApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* MagnetBoardApp.swift */; };
+		A20000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* ContentView.swift */; };
+		A20000000000000000000003 /* MagnetEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* MagnetEngine.swift */; };
+		A20000000000000000000004 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000014 /* Theme.swift */; };
+		A20000000000000000000005 /* MagneticTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015 /* MagneticTile.swift */; };
+		A20000000000000000000006 /* FieldOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* FieldOverlay.swift */; };
+		A20000000000000000000007 /* BoardControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* BoardControls.swift */; };
+		A20000000000000000000008 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000018 /* HUDView.swift */; };
+		A20000000000000000000009 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000019 /* SettingsSheet.swift */; };
+		A2000000000000000000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001A /* Assets.xcassets */; };
+		A2000000000000000000000B /* MagnetKit in Frameworks */ = {isa = PBXBuildFile; productRef = A200000000000000000000A1 /* MagnetKit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000011 /* MagnetBoardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetBoardApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A20000000000000000000013 /* MagnetEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetEngine.swift; sourceTree = "<group>"; };
+		A20000000000000000000014 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		A20000000000000000000015 /* MagneticTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagneticTile.swift; sourceTree = "<group>"; };
+		A20000000000000000000016 /* FieldOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldOverlay.swift; sourceTree = "<group>"; };
+		A20000000000000000000017 /* BoardControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardControls.swift; sourceTree = "<group>"; };
+		A20000000000000000000018 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
+		A20000000000000000000019 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
+		A2000000000000000000001A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2000000000000000000001B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A2000000000000000000001C /* MagnetBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagnetBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A20000000000000000000020 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2000000000000000000000B /* MagnetKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A20000000000000000000030 = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000031 /* MagnetBoard */,
+				A20000000000000000000032 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A20000000000000000000031 /* MagnetBoard */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000011 /* MagnetBoardApp.swift */,
+				A20000000000000000000012 /* ContentView.swift */,
+				A20000000000000000000013 /* MagnetEngine.swift */,
+				A20000000000000000000014 /* Theme.swift */,
+				A20000000000000000000015 /* MagneticTile.swift */,
+				A20000000000000000000016 /* FieldOverlay.swift */,
+				A20000000000000000000017 /* BoardControls.swift */,
+				A20000000000000000000018 /* HUDView.swift */,
+				A20000000000000000000019 /* SettingsSheet.swift */,
+				A2000000000000000000001A /* Assets.xcassets */,
+				A2000000000000000000001B /* Info.plist */,
+			);
+			path = MagnetBoard;
+			sourceTree = "<group>";
+		};
+		A20000000000000000000032 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000001C /* MagnetBoard.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A20000000000000000000040 /* MagnetBoard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A20000000000000000000050 /* Build configuration list for PBXNativeTarget "MagnetBoard" */;
+			buildPhases = (
+				A20000000000000000000060 /* Sources */,
+				A20000000000000000000020 /* Frameworks */,
+				A20000000000000000000061 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MagnetBoard;
+			packageProductDependencies = (
+				A200000000000000000000A1 /* MagnetKit */,
+			);
+			productName = MagnetBoard;
+			productReference = A2000000000000000000001C /* MagnetBoard.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A20000000000000000000070 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A20000000000000000000040 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A20000000000000000000051 /* Build configuration list for PBXProject "MagnetBoard" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A20000000000000000000030;
+			packageReferences = (
+				A200000000000000000000A0 /* XCRemoteSwiftPackageReference "Libraries.dev" */,
+			);
+			productRefGroup = A20000000000000000000032 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A20000000000000000000040 /* MagnetBoard */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A20000000000000000000061 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2000000000000000000000A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A20000000000000000000060 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A20000000000000000000001 /* MagnetBoardApp.swift in Sources */,
+				A20000000000000000000002 /* ContentView.swift in Sources */,
+				A20000000000000000000003 /* MagnetEngine.swift in Sources */,
+				A20000000000000000000004 /* Theme.swift in Sources */,
+				A20000000000000000000005 /* MagneticTile.swift in Sources */,
+				A20000000000000000000006 /* FieldOverlay.swift in Sources */,
+				A20000000000000000000007 /* BoardControls.swift in Sources */,
+				A20000000000000000000008 /* HUDView.swift in Sources */,
+				A20000000000000000000009 /* SettingsSheet.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A20000000000000000000080 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A20000000000000000000081 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A20000000000000000000090 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MagnetBoard/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.magnetboard.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A20000000000000000000091 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MagnetBoard/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.magnetboard.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A20000000000000000000050 /* Build configuration list for PBXNativeTarget "MagnetBoard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A20000000000000000000090 /* Debug */,
+				A20000000000000000000091 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A20000000000000000000051 /* Build configuration list for PBXProject "MagnetBoard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A20000000000000000000080 /* Debug */,
+				A20000000000000000000081 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A200000000000000000000A0 /* XCRemoteSwiftPackageReference "Libraries.dev" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Jakubantalik/Libraries.dev";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A200000000000000000000A1 /* MagnetKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A200000000000000000000A0 /* XCRemoteSwiftPackageReference "Libraries.dev" */;
+			productName = MagnetKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+	};
+	rootObject = A20000000000000000000070 /* Project object */;
+}
