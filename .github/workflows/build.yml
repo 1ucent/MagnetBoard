@@ -1,0 +1,43 @@
+name: build
+
+# Build-only check: compiles the app and uploads the unsigned .ipa as an
+# artifact. Publishing lives in release.yml.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ipa:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Add magnet model from secret (optional)
+        env:
+          MAGNET_MODEL_B64: ${{ secrets.MAGNET_MODEL_B64 }}
+        run: |
+          if [ -n "${MAGNET_MODEL_B64:-}" ]; then
+            printf '%s' "$MAGNET_MODEL_B64" | base64 --decode > MagnetBoard/Magnet.mfxl
+            echo "model added"
+          else
+            echo "::notice::no MAGNET_MODEL_B64 secret — building without the model (demo mode)"
+          fi
+
+      - name: Build unsigned ipa
+        run: ./build_ipa.sh
+
+      - name: Upload ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: MagnetBoard-ipa
+          path: build/MagnetBoard.ipa
+          if-no-files-found: error

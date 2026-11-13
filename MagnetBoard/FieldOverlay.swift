@@ -29,20 +29,19 @@ struct FieldOverlay: View {
         Canvas { context, size in
             drawSensor(in: &context)
 
-            guard let position = frame.position else { return }
-            let magnet = CGPoint(x: position.x - origin.x, y: position.y - origin.y)
-
-            // The locator can place the magnet beside the phone; keep drawing
-            // a little outside the board, but skip anything far away.
-            guard magnet.x > -180, magnet.x < size.width + 180,
-                  magnet.y > -180, magnet.y < size.height + 180 else { return }
+            // Where the magnet is, or the edge it is pointing at when the
+            // locator is unsure. Clamped inside the board so a magnet held
+            // beside the phone still reads as "here, at the edge".
+            let global = CGRect(origin: origin, size: size)
+            guard let focus = frame.attraction(in: global) else { return }
+            let magnet = CGPoint(x: focus.point.x - origin.x, y: focus.point.y - origin.y)
 
             let alpha = min(1, max(0, frame.presence))
             guard alpha > 0.01 else { return }
 
             drawBeam(from: sensor, to: magnet, alpha: alpha, in: &context)
             drawSpread(at: magnet, alpha: alpha, in: &context)
-            drawPuck(at: magnet, alpha: alpha, in: &context)
+            drawPuck(at: magnet, alpha: alpha, size: size, in: &context)
         }
         .allowsHitTesting(false)
     }
@@ -99,7 +98,8 @@ struct FieldOverlay: View {
         )
     }
 
-    private func drawPuck(at magnet: CGPoint, alpha: Double, in context: inout GraphicsContext) {
+    private func drawPuck(at magnet: CGPoint, alpha: Double, size: CGSize,
+                          in context: inout GraphicsContext) {
         let pulse: CGFloat = reduceMotion ? 0 : CGFloat(sin(now * 2.6)) * 8
         let halo = 58 + pulse
 
@@ -127,11 +127,14 @@ struct FieldOverlay: View {
             lineWidth: 2
         )
 
-        // Height above the glass, floating next to the puck.
-        let label = Text(String(format: "%.1f cm", frame.height))
+        // Height above the glass, or the rough distance when the locator is
+        // off. Kept inside the canvas so an edge puck still shows its value.
+        let metric = frame.height > 0.05 ? frame.height : frame.distance
+        let label = Text(String(format: "%.1f cm", metric))
             .font(.system(size: 10, weight: .bold, design: .rounded))
             .foregroundColor(Theme.accent.opacity(alpha))
-        context.draw(label, at: CGPoint(x: magnet.x + 30, y: magnet.y - 26), anchor: .leading)
+        let labelX = min(max(magnet.x, 56), max(56, size.width - 56))
+        context.draw(label, at: CGPoint(x: labelX, y: max(24, magnet.y - 44)), anchor: .center)
     }
 }
 

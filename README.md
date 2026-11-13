@@ -33,6 +33,8 @@ Magnet app  ──►  MagnetKit (Magnet.mfxl, Accelerate)  ──►  MagnetFra
 | `MagnetEngine.swift` | **The only file that talks to MagnetKit.** Config, `attach`/`detach`/`calibrate`, one `MagnetFrame` per refresh, gesture events, haptics, and a finger-driven demo magnet |
 | `ContentView.swift` | The board: `TimelineView(.animation)` → header, presence meter, tiles, status pill, demo puck, event banner |
 | `MagneticTile.swift` | Wraps any control, measures itself, applies offset / tilt / scale / glow from the frame |
+| `EdgeGather.swift` | Works out which screen edge the magnet is at (or is pointing at) and gathers the board toward it |
+| `ParticleField.swift` | `Canvas` dust stream that flows to the magnet and piles up at the edge |
 | `BoardControls.swift` | Power switch, level stepper, brightness slider, segmented field-mode chips, air-tap counter |
 | `FieldOverlay.swift` | `Canvas` beam from the magnetometer to the magnet, 1-σ spread ring, pulsing puck, tap ripples |
 | `HUDView.swift` | Presence, distance, height, spread, pull, too-close warning |
@@ -75,9 +77,27 @@ Sideloadly / TrollStore. Set `TEAM_ID=…` to sign instead.
 | Dart toward / yank away | `PUSH` / `PULLED AWAY` banner with the speed in cm/s |
 | Swipe across the screen fast | `SWIPE` banner (above 1,500 pt/s) |
 | Keep it too close | **TOO CLOSE** warning — past ~2,000 µT the phone gets magnetised |
+| Hold it at / past an edge | The whole board gathers to that edge and the particles pile up there |
 
 Settings (top-right) has **Demo magnet** for the Simulator: drag the orange puck,
 tap it for an air tap. Leaving demo mode re-attaches the real magnetometer.
+
+## Gathering to the edge
+
+The board's original idea: when the magnet is at (or just past) an edge of the
+screen, the whole UI comes to it. `EdgeGather` picks the edge and the point along
+it, and `EdgeGatherEffect` shrinks the board toward that point, so the cards pile
+up against the edge where the magnet is — and spring back out when it leaves.
+
+It works with the magnet **beside** the phone too: when the locator has no
+position, the kit's `toward` unit vector picks the edge, and `pull` sets the
+strength, so the UI still gathers even though the magnet never touches the glass.
+
+`ParticleField` is the other half: ~88 dust motes whose positions are a pure
+function of time and presence, so nothing accumulates frame to frame. They drift
+when the board is idle and stream into the magnet when it is near, forming a
+dense pile at the edge when the magnet is held off-screen. Both behaviours have
+toggles in **Settings → Motion**, stored in `@AppStorage`.
 
 ## How the library is used
 

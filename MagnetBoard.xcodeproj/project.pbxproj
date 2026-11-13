@@ -18,6 +18,8 @@
 		A20000000000000000000009 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000019 /* SettingsSheet.swift */; };
 		A2000000000000000000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001A /* Assets.xcassets */; };
 		A2000000000000000000000B /* MagnetKit in Frameworks */ = {isa = PBXBuildFile; productRef = A200000000000000000000A1 /* MagnetKit */; };
+		A2000000000000000000000C /* EdgeGather.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001D /* EdgeGather.swift */; };
+		A2000000000000000000000D /* ParticleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001E /* ParticleField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,8 @@
 		A2000000000000000000001A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2000000000000000000001B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A2000000000000000000001C /* MagnetBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagnetBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000000000000000000001D /* EdgeGather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeGather.swift; sourceTree = "<group>"; };
+		A2000000000000000000001E /* ParticleField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticleField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,8 @@
 				A20000000000000000000017 /* BoardControls.swift */,
 				A20000000000000000000018 /* HUDView.swift */,
 				A20000000000000000000019 /* SettingsSheet.swift */,
+				A2000000000000000000001D /* EdgeGather.swift */,
+				A2000000000000000000001E /* ParticleField.swift */,
 				A2000000000000000000001A /* Assets.xcassets */,
 				A2000000000000000000001B /* Info.plist */,
 			);
@@ -165,6 +171,8 @@
 				A20000000000000000000007 /* BoardControls.swift in Sources */,
 				A20000000000000000000008 /* HUDView.swift in Sources */,
 				A20000000000000000000009 /* SettingsSheet.swift in Sources */,
+				A2000000000000000000000C /* EdgeGather.swift in Sources */,
+				A2000000000000000000000D /* ParticleField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

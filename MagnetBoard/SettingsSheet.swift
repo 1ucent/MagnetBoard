@@ -13,6 +13,9 @@ struct SettingsSheet: View {
     @EnvironmentObject private var engine: MagnetEngine
     @Environment(\.dismiss) private var dismiss
 
+    @AppStorage("gather") private var gatherEnabled = true
+    @AppStorage("particles") private var particlesEnabled = true
+
     init() {}
 
     var body: some View {
@@ -20,6 +23,7 @@ struct SettingsSheet: View {
             ScrollView {
                 VStack(spacing: 14) {
                     demoCard
+                    motionCard
                     faceCard
                     calibrationCard
                     modelCard
@@ -53,6 +57,40 @@ struct SettingsSheet: View {
             .tint(Theme.accent)
 
             Text("Drag the orange puck and the board reacts without a real magnet. The Simulator has no magnetometer, so this is the way to try the app there.")
+                .font(.system(size: 11.5, weight: .medium, design: .rounded))
+                .foregroundStyle(Theme.textDim)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .tileSurface()
+    }
+
+    private var motionCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("MOTION")
+                .tileLabel()
+
+            Toggle(isOn: $gatherEnabled) {
+                Text("Gather the board to the edge")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Theme.text)
+            }
+            .tint(Theme.accent)
+
+            Text("The whole board shrinks toward the screen edge the magnet is at — even when it is held beside the phone.")
+                .font(.system(size: 11.5, weight: .medium, design: .rounded))
+                .foregroundStyle(Theme.textDim)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Divider().overlay(Theme.stroke)
+
+            Toggle(isOn: $particlesEnabled) {
+                Text("Particle field")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Theme.text)
+            }
+            .tint(Theme.accent)
+
+            Text("Dust that streams to the magnet and piles up at the edge.")
                 .font(.system(size: 11.5, weight: .medium, design: .rounded))
                 .foregroundStyle(Theme.textDim)
                 .fixedSize(horizontal: false, vertical: true)

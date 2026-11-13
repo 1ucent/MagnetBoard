@@ -15,6 +15,9 @@ struct ContentView: View {
     @EnvironmentObject private var engine: MagnetEngine
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    @AppStorage("gather") private var gatherEnabled = true
+    @AppStorage("particles") private var particlesEnabled = true
+
     @State private var isPowerOn = true
     @State private var brightness: Double = 0.64
     @State private var mode: BoardMode = .calm
@@ -33,12 +36,27 @@ struct ContentView: View {
 
             GeometryReader { proxy in
                 let origin = proxy.frame(in: .global).origin
+                let board = CGRect(origin: origin, size: proxy.size)
+                let gather = EdgeGather.make(frame: frame, in: board)
 
                 ZStack {
                     background(frame: frame)
 
+                    if particlesEnabled {
+                        GeometryReader { canvas in
+                            ParticleField(
+                                frame: frame,
+                                origin: canvas.frame(in: .global).origin,
+                                now: now,
+                                reduceMotion: reduceMotion
+                            )
+                        }
+                        .ignoresSafeArea()
+                        .allowsHitTesting(false)
+                    }
+
                     VStack(spacing: 12) {
-                        header(frame: frame)
+                        header(frame: frame, gather: gather)
                             .padding(.horizontal, 18)
                         presenceMeter(frame: frame)
                             .padding(.horizontal, 18)
@@ -79,6 +97,7 @@ struct ContentView: View {
                         }
                     }
                     .padding(.top, 4)
+                    .modifier(EdgeGatherEffect(gather: gather, board: board, enabled: gatherEnabled))
 
                     FieldOverlay(
                         frame: frame,
@@ -146,7 +165,7 @@ struct ContentView: View {
 
     // MARK: Header
 
-    private func header(frame: MagnetFrame) -> some View {
+    private func header(frame: MagnetFrame, gather: EdgeGather?) -> some View {
         HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 3) {
                 Text("MAGNET BOARD")
@@ -154,7 +173,7 @@ struct ContentView: View {
                     .tracking(1.4)
                     .foregroundStyle(Theme.text)
 
-                Text(statusLine(frame: frame))
+                Text(statusLine(frame: frame, gather: gather))
                     .font(.system(size: 9.5, weight: .semibold, design: .rounded))
                     .tracking(1.1)
                     .foregroundStyle(Theme.textDim)
@@ -179,13 +198,16 @@ struct ContentView: View {
         }
     }
 
-    private func statusLine(frame: MagnetFrame) -> String {
+    private func statusLine(frame: MagnetFrame, gather: EdgeGather?) -> String {
         if engine.isDemoMode { return "DEMO · DRAG THE ORANGE PUCK" }
         if !MagnetSupport.isLinked { return "ADD THE MAGNETKIT PACKAGE" }
         if !MagnetSupport.isModelLoaded { return "ADD MAGNET.MFXL TO THE APP TARGET" }
         if !frame.available { return "WAITING FOR THE MAGNETOMETER" }
         if frame.calibrating { return "TAKING A NEW ZERO · MAGNETS AWAY" }
         if frame.tooClose { return "MAGNET TOO CLOSE · HOLD 2 CM AWAY" }
+        if let gather, gather.strength > 0.3 {
+            return "GATHERING TO THE \(gather.edge.label) EDGE"
+        }
         if frame.presence > 0.05 { return "MAGNET DETECTED · MOVE IT AROUND" }
         return "HOLD A MAGNET NEAR THE TOP-LEFT OF THE PHONE"
     }
