@@ -2,6 +2,12 @@
 
 [![Magnet Board promo](promo/poster.png)](promo/magnetboard-promo.webm)
 
+**[Download the unsigned .ipa](https://github.com/1ucent/MagnetBoard/releases/latest)** ·
+[watch the 15 s promo](promo/magnetboard-promo.webm)
+
+> The release build is compiled by CI, which has no `Magnet.mfxl` (licence), so
+> it runs in demo mode. Build locally with the model for the real magnet.
+
 A small SwiftUI iPhone app whose whole interface **leans toward a real magnet**.
 
 Hold a fridge magnet (a small neodymium ring works best) about 2 cm above the
