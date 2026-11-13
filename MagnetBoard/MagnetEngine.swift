@@ -35,6 +35,16 @@ enum MagnetSupport {
         return false
         #endif
     }
+
+    /// False when `Magnet.mfxl` is not in the app bundle. The kit still reports
+    /// pull/direction, but the presence and air-tap networks are off.
+    static var isModelLoaded: Bool {
+        #if canImport(MagnetKit)
+        return MagnetModel.bundled != nil
+        #else
+        return false
+        #endif
+    }
 }
 
 /// An air tap (or a non-tap event) to ripple at, in global points.
@@ -56,6 +66,9 @@ struct MagnetFlash: Equatable {
 
 /// One frame of magnet input, in the same units as MagnetKit's `MagnetReading`.
 struct MagnetFrame {
+    /// False while the magnetometer has not reported yet (no sensor, or a
+    /// Simulator without a simulated field).
+    var available: Bool
     /// Where the magnet is, global points. Nil while the locator is off or unsure.
     var position: CGPoint?
     /// The locator's 1-sigma uncertainty, points.
@@ -80,6 +93,7 @@ struct MagnetFrame {
     var isSimulated: Bool
 
     static let idle = MagnetFrame(
+        available: false,
         position: nil,
         spread: 0,
         height: 0,
@@ -225,14 +239,18 @@ final class MagnetEngine: ObservableObject {
 
         #if canImport(MagnetKit)
         let reading = MagnetSource.shared.reading(now: now)
+        let ready = reading.available
+        let span = reading.distance.isFinite ? reading.distance : 0
+
         return MagnetFrame(
+            available: ready,
             position: reading.screenPosition,
             spread: CGFloat(reading.screenSpread),
-            height: CGFloat(reading.height),
-            presence: Double(reading.presence),
-            pull: Double(reading.pull),
+            height: CGFloat(reading.height ?? 0),
+            presence: ready ? Double(reading.presence) : 0,
+            pull: ready ? Double(reading.pull) : 0,
             toward: CGVector(dx: CGFloat(reading.toward.dx), dy: CGFloat(reading.toward.dy)),
-            distance: Double(reading.distance),
+            distance: span,
             approachSpeed: Double(reading.approachSpeed),
             tooClose: reading.tooClose,
             calibrating: reading.calibrating,
@@ -264,13 +282,13 @@ final class MagnetEngine: ObservableObject {
                 guard let self else { return }
                 switch gesture {
                 case .tap(let at):
-                    self.emit(.tap(at))
+                    self.emit(.tap(at ?? MagnetSupport.sensorPosition))
                 case .push(let speed):
                     self.emit(.push(Double(speed)))
                 case .pullAway(let speed):
                     self.emit(.pullAway(Double(speed)))
                 case .swipe(let direction, let speed):
-                    self.emit(.swipe(String(describing: direction), Double(speed)))
+                    self.emit(.swipe(Self.axis(of: direction), Double(speed)))
                 }
             }
         }
@@ -278,6 +296,13 @@ final class MagnetEngine: ObservableObject {
     }
 
     // MARK: Events
+
+    private static func axis(of direction: CGVector) -> String {
+        if abs(direction.dx) >= abs(direction.dy) {
+            return direction.dx >= 0 ? "right" : "left"
+        }
+        return direction.dy >= 0 ? "down" : "up"
+    }
 
     private func emit(_ event: MagnetEvent) {
         switch event {
@@ -382,6 +407,7 @@ final class MagnetEngine: ObservableObject {
         let closeness = max(0, min(1, 1 - (centimeters - 2) / 18))
 
         return MagnetFrame(
+            available: true,
             position: demoPoint,
             spread: 9,
             height: CGFloat(max(0.4, 3.0 - centimeters * 0.12)),

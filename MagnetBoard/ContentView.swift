@@ -182,6 +182,8 @@ struct ContentView: View {
     private func statusLine(frame: MagnetFrame) -> String {
         if engine.isDemoMode { return "DEMO · DRAG THE ORANGE PUCK" }
         if !MagnetSupport.isLinked { return "ADD THE MAGNETKIT PACKAGE" }
+        if !MagnetSupport.isModelLoaded { return "ADD MAGNET.MFXL TO THE APP TARGET" }
+        if !frame.available { return "WAITING FOR THE MAGNETOMETER" }
         if frame.calibrating { return "TAKING A NEW ZERO · MAGNETS AWAY" }
         if frame.tooClose { return "MAGNET TOO CLOSE · HOLD 2 CM AWAY" }
         if frame.presence > 0.05 { return "MAGNET DETECTED · MOVE IT AROUND" }
@@ -236,10 +238,14 @@ struct StatusPill: View {
     }
 
     private var current: (text: String, color: Color) {
-        if !MagnetSupport.isLinked { return ("NO MODEL", Theme.warm) }
+        if isDemo {
+            return frame.presence > 0.3 ? ("DEMO · LOCKED", Theme.accent) : ("DEMO", Theme.textDim)
+        }
+        if !MagnetSupport.isLinked { return ("KIT MISSING", Theme.warm) }
+        if !MagnetSupport.isModelLoaded { return ("NO MODEL FILE", Theme.warm) }
         if frame.calibrating { return ("CALIBRATING", Theme.warm) }
+        if !frame.available { return ("NO SENSOR", Theme.textDim) }
         if frame.tooClose { return ("TOO CLOSE", Theme.warm) }
-        if isDemo { return frame.presence > 0.3 ? ("DEMO · LOCKED", Theme.accent) : ("DEMO", Theme.textDim) }
         if frame.presence > 0.55 { return ("MAGNET LOCKED", Theme.mint) }
         if frame.presence > 0.05 { return ("TRACKING", Theme.accent) }
         return ("SEARCHING", Theme.textDim)

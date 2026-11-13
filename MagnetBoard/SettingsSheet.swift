@@ -104,11 +104,14 @@ struct SettingsSheet: View {
     }
 
     private var modelCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let linked = MagnetSupport.isLinked
+        let loaded = linked && MagnetSupport.isModelLoaded
+        return VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
-                Image(systemName: MagnetSupport.isLinked ? "checkmark.seal.fill" : "exclamationmark.triangle.fill")
-                    .foregroundStyle(MagnetSupport.isLinked ? Theme.mint : Theme.warm)
-                Text(MagnetSupport.isLinked ? "MagnetKit linked" : "MagnetKit not linked")
+                Image(systemName: loaded ? "checkmark.seal.fill" : "exclamationmark.triangle.fill")
+                    .foregroundStyle(loaded ? Theme.mint : Theme.warm)
+                Text(loaded ? "MagnetKit + model ready"
+                            : linked ? "Magnet.mfxl is missing" : "MagnetKit is not linked")
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(Theme.text)
             }

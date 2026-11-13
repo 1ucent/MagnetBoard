@@ -61,8 +61,10 @@ struct HUDView: View {
 
                 if frame.tooClose {
                     badge("TOO CLOSE", color: Theme.warm)
-                } else if !MagnetSupport.isLinked {
+                } else if !MagnetSupport.isLinked || !MagnetSupport.isModelLoaded {
                     badge("MODEL MISSING", color: Theme.warm)
+                } else if !frame.available {
+                    badge("NO SENSOR", color: Theme.textDim)
                 } else if frame.isSimulated {
                     badge("SIMULATED", color: Theme.accentAlt)
                 } else if frame.presence > 0.5 {
